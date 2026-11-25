@@ -68,5 +68,10 @@ export function enhance(root: HTMLElement, mode: 'full' | 'light') {
       return () => { ui.abort(); gsap.ticker.remove(frame); lenis.destroy() }
     })
   }
-  return () => media.revert()
+  const resize = new ResizeObserver(() => ScrollTrigger.refresh(true))
+  resize.observe(root)
+  return () => {
+    resize.disconnect()
+    media.revert()
+  }
 }

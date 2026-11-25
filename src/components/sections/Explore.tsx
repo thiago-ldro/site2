@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { Armchair, ChevronLeft, ChevronRight, Focus, Heart, Layers, ListChecks, Maximize2, ScanLine, Shield, Sparkles, Target } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Armchair, Focus, Heart, Layers, ListChecks, ScanLine, Search, Shield, Sparkles, Target, X } from 'lucide-react'
 import type { ClinicConfig, Treatment } from '../../config/schema'
 import { Dialog } from '../ui/Dialog'
 import { Image } from './Intro'
@@ -7,15 +7,45 @@ import { Image } from './Intro'
 const treatmentIcons = { sparkles: Sparkles, scan: ScanLine, align: Focus, shield: Shield, heart: Heart, layers: Layers }
 const benefitIcons = [Heart, Target, Armchair, ScanLine, Shield, ListChecks]
 
+const searchable = (value: string) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim()
+
 export function Treatments({ config, onSelect }: { config: ClinicConfig; onSelect: (id: string) => void }) {
   const [active, setActive] = useState<Treatment | null>(null)
+  const [query, setQuery] = useState('')
+  const input = useRef<HTMLInputElement>(null)
+  const words = searchable(query).split(/\s+/).filter(Boolean)
+  const filtering = words.length > 0
+  const matches = new Set(config.treatments.filter((item) => {
+    const content = searchable(item.title + ' ' + item.summary)
+    return words.every((word) => content.includes(word))
+  }).map((item) => item.id))
+
   return <section id="tratamentos" className="section treatment-section">
     <div className="wrap">
       <div className="section-heading" data-reveal><div><p className="eyebrow">Tratamentos</p><h2>{config.copy.treatmentTitle}</h2></div><p>{config.copy.treatmentIntro}</p></div>
-      <div className="treatment-grid">
+      <div className="treatment-filter">
+        <div className="treatment-search" role="search" aria-label="Busca de tratamentos">
+          <Search size={21} aria-hidden="true" />
+          <label htmlFor="treatment-search" className="sr-only">Buscar tratamentos</label>
+          <input ref={input} id="treatment-search" type="search" placeholder="Buscar tratamento" autoComplete="off"
+            aria-controls="treatment-results" value={query} onChange={(event) => setQuery(event.target.value)} />
+          {query && <button type="button" className="icon-button" aria-label="Limpar busca de tratamentos" onClick={() => {
+            setQuery('')
+            input.current?.focus()
+          }}><X size={18} aria-hidden="true" /></button>}
+        </div>
+        <p className="treatment-result-count" aria-live="polite" aria-atomic="true">
+          {filtering && matches.size > 0 && (matches.size === 1 ? '1 tratamento encontrado' : matches.size + ' tratamentos encontrados')}
+        </p>
+      </div>
+      <div className={filtering ? 'treatment-grid is-filtered' : 'treatment-grid'} id="treatment-results">
+        {matches.size === 0 && <div className="treatment-empty">
+          <p aria-live="polite">Nenhum tratamento encontrado.</p>
+          <a className="button outline-button" href="#agendamento">Pedir orientação</a>
+        </div>}
         {config.treatments.map((item) => {
           const Icon = treatmentIcons[item.icon]
-          return <article key={item.id} className="treatment" data-reveal>
+          return <article key={item.id} className="treatment" data-reveal hidden={!matches.has(item.id)}>
             <div className="treatment-photo"><Image photo={item.image} /><div className="treatment-icon"><Icon size={20} strokeWidth={1.4} /></div></div>
             <div className="treatment-copy"><h3>{item.title}</h3><p>{item.summary}</p><button className="link-button" aria-label={'Mais informações sobre ' + item.title} onClick={() => setActive(item)}>Saiba mais <span aria-hidden="true">+</span></button></div>
           </article>
@@ -38,42 +68,5 @@ export function Experience({ config }: { config: ClinicConfig }) {
         return <li key={index} data-reveal><Icon size={26} strokeWidth={1.35} /><div><h3>{item.title}</h3><p>{item.description}</p></div></li>
       })}</ul>
     </div>
-  </section>
-}
-
-export function Gallery({ config }: { config: ClinicConfig }) {
-  const rail = useRef<HTMLDivElement>(null)
-  const [selected, setSelected] = useState<number | null>(null)
-  const items = config.photos.gallery
-  useEffect(() => {
-    const element = rail.current
-    if (!element) return
-    const media = matchMedia('(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
-    let timer: number | undefined
-    function move(event: WheelEvent) {
-      if (!media.matches || !element || event.ctrlKey || event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return
-      const maximum = element.scrollWidth - element.clientWidth
-      const direction = Math.sign(event.deltaY)
-      if (!direction || maximum <= 1 || (direction < 0 && element.scrollLeft <= 1) || (direction > 0 && element.scrollLeft >= maximum - 1)) return
-      event.preventDefault()
-      element.classList.add('wheel-drag')
-      element.scrollLeft += event.deltaY * (event.deltaMode === 1 ? 16 : 1)
-      window.clearTimeout(timer)
-      timer = window.setTimeout(() => element.classList.remove('wheel-drag'), 170)
-    }
-    element.addEventListener('wheel', move, { passive: false })
-    return () => { element.removeEventListener('wheel', move); window.clearTimeout(timer); element.classList.remove('wheel-drag') }
-  }, [])
-  const change = (delta: number) => setSelected((index) => index === null ? null : (index + items.length + delta) % items.length)
-  const scroll = (delta: number) => rail.current?.scrollBy({ left: delta * (rail.current.firstElementChild?.clientWidth ?? 300), behavior: 'auto' })
-  return <section id="estrutura" className="section gallery">
-    <div className="wrap section-heading" data-reveal><div><p className="eyebrow">Nossa estrutura</p><h2>{config.copy.galleryTitle}</h2></div><div><p>{config.copy.galleryIntro}</p><div className="gallery-controls"><button className="icon-button" onClick={() => scroll(-1)} aria-label="Deslizar galeria para trás"><ChevronLeft /></button><button className="icon-button" onClick={() => scroll(1)} aria-label="Deslizar galeria para frente"><ChevronRight /></button></div></div></div>
-    <div className="gallery-rail" ref={rail} aria-label="Galeria da estrutura" role="region" tabIndex={0}>
-      {items.map((item, index) => <figure key={index}><button className="gallery-photo" onClick={() => setSelected(index)} aria-label={'Ampliar ' + item.title}><Image photo={item} /><span><Maximize2 size={18} /></span></button><figcaption>{item.title}</figcaption></figure>)}
-    </div>
-    {config.photos.credit && <p className="wrap photo-credit">{config.photos.credit}</p>}
-    {selected !== null && <Dialog title="Visualização da galeria" className="gallery-dialog" onClose={() => setSelected(null)}><Image photo={items[selected]} />
-      <div className="gallery-dialog-nav"><button className="icon-button" aria-label="Foto anterior" onClick={() => change(-1)}><ChevronLeft /></button><p aria-live="polite">{items[selected].title}</p><button className="icon-button" aria-label="Próxima foto" onClick={() => change(1)}><ChevronRight /></button></div>
-    </Dialog>}
   </section>
 }
