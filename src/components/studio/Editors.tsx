@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import type { ClinicConfig, Photo, Treatment } from '../../config/schema'
-import { Select, Text, Upload } from './Fields'
+import type { ClinicConfig, ClinicMetric, Photo, Treatment } from '../../config/schema'
+import { Field, Select, Text, Upload } from './Fields'
 
 export function Collection<T>({ label, items, set, create, render }: { label: string; items: T[]; set: (items: T[]) => void; create: () => T; render: (item: T, update: (item: T) => void) => ReactNode }) {
   return <div className="studio-collection">
@@ -64,6 +64,19 @@ export function CopyEditor({ copy, set }: { copy: ClinicConfig['copy']; set: (co
     <Collection label="Diferencial" items={copy.benefits} set={(benefits) => set({ ...copy, benefits })} create={() => ({ title: 'Novo diferencial', description: '' })}
       render={(item, update) => <><Text label="Título do diferencial" value={item.title} set={(title) => update({ ...item, title })} /><Text label="Descrição do diferencial" value={item.description} set={(description) => update({ ...item, description })} multiline /></>} />
   </>
+}
+
+export function MetricsEditor({ items, set }: { items: ClinicMetric[]; set: (items: ClinicMetric[]) => void }) {
+  return <Collection<ClinicMetric> label="Métrica" items={items} set={set}
+    create={() => ({ label: 'Nova métrica', value: null, note: '' })}
+    render={(item, update) => <>
+      <Text label="Nome da métrica" value={item.label} set={(label) => update({ ...item, label })} />
+      <Field label="Valor confirmado">
+        <input type="number" min={0} step={1} inputMode="numeric" value={item.value ?? ''}
+          onChange={({ target }) => update({ ...item, value: target.value === '' ? null : target.valueAsNumber })} />
+      </Field>
+      <Text label="Período ou fonte" value={item.note} set={(note) => update({ ...item, note })} />
+    </>} />
 }
 
 type Review = ClinicConfig['reviews'][number]

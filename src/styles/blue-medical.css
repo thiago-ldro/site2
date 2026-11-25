@@ -1,5 +1,7 @@
 .site[data-preset="Blue Medical"] {
   --reflection: color-mix(in srgb, var(--signal) 24%, transparent);
+  --neon-line: color-mix(in srgb, var(--signal) 72%, var(--surface));
+  --neon-halo: color-mix(in srgb, var(--signal) 46%, transparent);
   --hairline: color-mix(in srgb, var(--primary) 18%, var(--paper));
   --metal: linear-gradient(116deg, var(--surface), var(--accent) 64%, color-mix(in srgb, var(--signal) 32%, var(--accent)));
   background: var(--paper);
@@ -62,6 +64,32 @@
 [data-preset="Blue Medical"] .button {
   position: relative;
   border-radius: 4px;
+}
+
+[data-preset="Blue Medical"] :is(.button-primary, .button-dark, .nav-book)::before {
+  position: absolute;
+  inset: -2px;
+  border: 1px solid var(--neon-line);
+  border-radius: inherit;
+  box-shadow: 0 0 10px var(--neon-halo), inset 0 0 5px var(--neon-halo);
+  opacity: .42;
+  content: "";
+  pointer-events: none;
+}
+
+[data-preset="Blue Medical"] :is(.hero-actions .button-primary, .mobile-book .button-primary, .nav-book)::before {
+  animation: blue-neon-pulse 2.2s .2s ease-in-out 2;
+}
+
+[data-preset="Blue Medical"] :is(.button-primary, .button-dark, .nav-book):is(:hover, :focus-visible)::before {
+  animation: blue-neon-pulse 2.2s ease-in-out;
+}
+
+@keyframes blue-neon-pulse {
+  50% {
+    opacity: .95;
+    transform: scale(1.025, 1.075);
+  }
 }
 
 [data-preset="Blue Medical"] :is(.button-primary, .button-dark, .nav-book, .text-button)::after {
@@ -165,7 +193,7 @@
 
 [data-preset="Blue Medical"] .treatment:is(:hover, :focus-within) {
   border-color: var(--signal);
-  box-shadow: 0 14px 30px var(--reflection);
+  box-shadow: 0 0 0 1px var(--neon-halo), 0 0 19px var(--reflection);
 }
 
 [data-preset="Blue Medical"] .treatment-icon {
@@ -218,8 +246,8 @@
 
 [data-preset="Blue Medical"] .booking-form {
   background: linear-gradient(150deg, var(--surface), var(--paper));
-  border: 1px solid var(--accent);
-  box-shadow: 0 20px 60px color-mix(in srgb, var(--dark) 28%, transparent), 0 0 35px var(--reflection);
+  border: 1px solid var(--neon-line);
+  box-shadow: 0 0 0 1px var(--neon-halo), 0 20px 60px color-mix(in srgb, var(--dark) 28%, transparent), 0 0 35px var(--reflection);
 }
 
 [data-preset="Blue Medical"] .booking-form :is(input:not([type=checkbox]), select) {
@@ -242,12 +270,29 @@
 
 .site[data-preset="Blue Medical"] .floating-chat {
   background: linear-gradient(135deg, var(--primary), var(--dark));
-  border-color: var(--accent);
-  box-shadow: 0 6px 22px color-mix(in srgb, var(--dark) 27%, transparent);
+  border-color: var(--neon-line);
+  box-shadow: 0 0 12px var(--neon-halo), 0 6px 22px color-mix(in srgb, var(--dark) 27%, transparent);
 }
 
 .site[data-preset="Blue Medical"] .floating-chat:hover {
   background: var(--surface);
+}
+
+[data-preset="Blue Medical"] .clinic-metrics {
+  background:
+    radial-gradient(ellipse at 75% 100%, var(--reflection), transparent 65%),
+    linear-gradient(120deg, var(--dark), color-mix(in srgb, var(--primary) 55%, var(--dark)));
+}
+
+[data-preset="Blue Medical"] .metric {
+  background: color-mix(in srgb, var(--surface) 5%, transparent);
+  border-color: color-mix(in srgb, var(--neon-line) 72%, transparent);
+  box-shadow: 0 0 13px var(--reflection), inset 0 1px color-mix(in srgb, var(--surface) 18%, transparent);
+}
+
+[data-preset="Blue Medical"] .metric-number {
+  color: var(--surface);
+  text-shadow: 0 0 19px var(--neon-halo);
 }
 
 @media (max-width: 690px) {

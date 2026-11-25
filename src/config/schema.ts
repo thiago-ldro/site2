@@ -32,6 +32,11 @@ export const clinicSchema = z.object({
     specialties: z.array(text), benefits: z.array(z.object({ title: text, description: text })),
   }),
   treatments,
+  metrics: z.array(z.object({
+    label: text.trim().min(1),
+    value: z.number().int().nonnegative().nullable(),
+    note: text,
+  })).optional(),
   team: z.array(z.object({ name: text.min(1), specialty: text, registration: text, bio: text, image: photo })),
   reviews: z.array(z.object({ name: text.min(1), rating: z.number().int().min(1).max(5), quote: text.min(1), source: https })),
   faq: z.array(z.object({ question: text.min(1), answer: text })),
@@ -43,3 +48,4 @@ export const clinicSchema = z.object({
 export type ClinicConfig = z.infer<typeof clinicSchema>
 export type Photo = ClinicConfig['photos']['hero']
 export type Treatment = ClinicConfig['treatments'][number]
+export type ClinicMetric = NonNullable<ClinicConfig['metrics']>[number]

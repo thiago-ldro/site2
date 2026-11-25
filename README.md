@@ -28,7 +28,7 @@ Use `AXYRON_CHROMIUM=/caminho/para/chromium` para indicar um navegador já insta
 
 1. Crie um repositório ou branch a partir deste projeto e mantenha uma cópia da configuração master.
 2. Rode o AXYRON Studio. Abra Identidade visual, escolha o preset e personalize logotipo, tipografia e cores. Escolha o dispositivo na barra superior para conferir os pontos de quebra.
-3. Preencha contato e identificação profissional. Ajuste tratamentos, profissionais, fotografias, perguntas, textos e seções. Cadastre avaliações somente com autorização e fonte quando disponível.
+3. Preencha contato e identificação profissional. Em **Métricas da clínica**, cadastre apenas números confirmados e contextualize o período ou a fonte. Valores em branco ficam ocultos. Ajuste tratamentos, profissionais, fotografias, perguntas, textos e seções. Cadastre avaliações somente com autorização e fonte quando disponível.
 4. Exporte o JSON pelo Studio. O formulário do Studio valida formatos e mantém a última prévia válida enquanto um campo estiver incompleto. As alterações ficam em memória até a exportação.
 5. Rode `npm run clinic:apply -- /caminho/cliente.json`. O comando valida o JSON e substitui `src/config/clinic.config.ts`. Imagens enviadas no Studio ficam em `public/images/client/`, com nomes derivados do conteúdo, e as referências passam a apontar para caminhos locais. Revise o diff e inclua a configuração e os assets no commit.
 6. Para editar manualmente, use `src/config/clinic.config.ts` e mantenha imagens sob `public/images/`. Prefira WebP ou AVIF com texto alternativo e uma versão vertical para o hero no celular. SVGs confiáveis podem entrar via caminhos locais. Use URLs HTTPS quando a hospedagem externa for intencional.

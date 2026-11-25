@@ -53,6 +53,11 @@ export const clinicConfig = {
     treatment('endodontia', 'Endodontia', 'Avaliação e cuidado da parte interna do dente.', 'A avaliação identifica se há indicação de tratamento dos canais e ajuda a planejar os cuidados posteriores.', 'heart', equipment),
     treatment('avaliacao', 'Avaliação odontológica', 'Uma conversa sobre a sua saúde bucal e suas dúvidas.', 'Na consulta inicial, o profissional escuta suas prioridades, avalia sua saúde bucal e explica as opções pertinentes.', 'scan', lounge),
   ],
+  metrics: [
+    { label: 'Sorrisos restaurados', value: null, note: '' },
+    { label: 'Pessoas satisfeitas', value: null, note: '' },
+    { label: 'Avaliações concluídas', value: null, note: '' },
+  ],
   team: [], reviews: [],
   faq: [
     { question: 'Como solicitar uma avaliação?', answer: 'Preencha o formulário de atendimento e escolha avaliação odontológica. Revise a mensagem no WhatsApp antes de enviar.' },

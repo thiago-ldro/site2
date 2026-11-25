@@ -6,6 +6,7 @@ import { Footer } from './components/layout/Footer'
 import { About, Hero, Marquee } from './components/sections/Intro'
 import { Experience, Gallery, Treatments } from './components/sections/Explore'
 import { Contact, FAQ, Reviews, Team } from './components/sections/Details'
+import { Metrics } from './components/sections/Metrics'
 import { Booking } from './components/forms/Booking'
 import { Dialog } from './components/ui/Dialog'
 
@@ -37,6 +38,7 @@ export default function App({ config, editing = false }: { config: ClinicConfig;
       <Hero config={config} />
       {sections.marquee && !!config.copy.specialties.length && <Marquee config={config} />}
       {sections.about && <About config={config} />}
+      {config.metrics?.some(({ value }) => value !== null) && <Metrics items={config.metrics} animate={config.motion !== 'off'} />}
       {sections.treatments && !!config.treatments.length && <Treatments config={config} onSelect={setSelected} />}
       {sections.experience && <Experience config={config} />}
       {sections.gallery && !!config.photos.gallery.length && <Gallery config={config} />}

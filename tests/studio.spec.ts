@@ -34,3 +34,40 @@ test('Studio altera a prévia, valida importação, exporta JSON e restaura o pa
   await expect(page.getByRole('status')).toContainText('Configuração importada')
   await expect(preview.getByRole('heading', { level: 1 })).toHaveAccessibleName('Clínica de teste automatizado')
 })
+
+test('Studio permite configurar uma métrica e anima somente os valores preenchidos', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4181/studio.html')
+  await page.getByRole('button', { name: 'Mobile', exact: true }).click()
+  await page.getByText('Métricas da clínica', { exact: true }).click()
+  await page.getByText('Métrica 1', { exact: true }).click()
+  await page.getByRole('spinbutton', { name: 'Valor confirmado' }).fill('1280')
+  await page.getByRole('textbox', { name: 'Período ou fonte' }).fill('Período de teste')
+  const preview = page.frameLocator('iframe')
+  const region = preview.getByRole('region', { name: 'O cuidado em números.' })
+  await expect(region.locator('dt')).toHaveText(['Sorrisos restaurados'])
+  await expect(region.getByText('Período de teste')).toHaveCount(1)
+  const readings = await region.evaluate(async (section) => {
+    const counter = section.querySelector('.metric-number [aria-hidden]')
+    if (!counter) throw new Error('Contador não encontrado')
+    return new Promise<string[]>((resolve) => {
+      const values: string[] = []
+      const observer = new MutationObserver(() => {
+        values.push(counter.textContent ?? '')
+        if (values.at(-1) === '1.280') finish()
+      })
+      const timeout = window.setTimeout(finish, 2500)
+      function finish() {
+        clearTimeout(timeout)
+        observer.disconnect()
+        resolve(values)
+      }
+      observer.observe(counter, { childList: true, characterData: true, subtree: true })
+      section.scrollIntoView()
+    })
+  })
+  expect(readings.some((value) => Number(value) > 0 && Number(value) < 1280)).toBe(true)
+  expect(readings.at(-1)).toBe('1.280')
+  await expect(region.locator('.metric-number .sr-only')).toHaveText('1.280')
+  await page.getByRole('spinbutton', { name: 'Valor confirmado' }).fill('')
+  await expect(region).toHaveCount(0)
+})

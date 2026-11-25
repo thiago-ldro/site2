@@ -6,7 +6,7 @@ import { clinicConfig } from '../../config/clinic.config'
 import { presets } from '../../config/presets'
 import { themeVariables } from '../../lib/theme'
 import { Field, Select, Text, Upload } from './Fields'
-import { Collection, CopyEditor, PhotosEditor, ReviewsEditor, TeamEditor, TreatmentsEditor } from './Editors'
+import { Collection, CopyEditor, MetricsEditor, PhotosEditor, ReviewsEditor, TeamEditor, TreatmentsEditor } from './Editors'
 
 const sizes = { Desktop: 1440, Tablet: 768, Mobile: 390 }
 const labels: Record<keyof ClinicConfig['sections'], string> = { marquee: 'Faixa de especialidades', about: 'Sobre', treatments: 'Tratamentos', experience: 'Diferenciais', gallery: 'Galeria', team: 'Equipe', reviews: 'Avaliações', faq: 'Perguntas frequentes', contact: 'Contato' }
@@ -93,6 +93,11 @@ export function Studio() {
           <Field label="Modo demonstrativo"><input type="checkbox" checked={config.demo} onChange={(event) => update('demo', event.target.checked)} /></Field>
           <Select label="Intensidade das animações" value={config.motion} options={['full', 'light', 'off']} set={(motion) => update('motion', motion as ClinicConfig['motion'])} />
           {(Object.keys(labels) as (keyof typeof labels)[]).map((key) => <Field key={key} label={labels[key]}><input type="checkbox" checked={config.sections[key]} onChange={(event) => update('sections', { ...config.sections, [key]: event.target.checked })} /></Field>)}
+        </details>
+        <details>
+          <summary>Métricas da clínica</summary>
+          <p>Use números confirmados. Métricas com valor em branco ficam ocultas. Explique o período ou a fonte quando pertinente.</p>
+          <MetricsEditor items={config.metrics ?? []} set={(metrics) => update('metrics', metrics)} />
         </details>
         <details><summary>Tratamentos</summary><TreatmentsEditor items={config.treatments} set={(value) => update('treatments', value)} /></details>
         <details><summary>Profissionais</summary><TeamEditor items={config.team} set={(value) => update('team', value)} /></details>
