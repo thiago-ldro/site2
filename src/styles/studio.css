@@ -1,0 +1,26 @@
+.studio-shell{font:500 14px/1.5 "Manrope Variable",system-ui,sans-serif;background:#eeeae2;color:#182820;min-height:100dvh}
+.studio-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:14px 22px;gap:12px;background:#092923;color:#fff}
+.studio-header h1{font-size:21px;letter-spacing:.11em;margin:0}
+.studio-header h1 em{font-family:"Newsreader Variable",Georgia,serif;font-weight:400;letter-spacing:normal;color:#e2c49b}
+.studio-header button,.studio-actions label,.studio-editor button{padding:8px 11px;border:1px solid currentColor;cursor:pointer;font-weight:750}
+.device-picker,.studio-actions{display:flex;flex-wrap:wrap;gap:7px}
+.device-picker button[aria-pressed=true],.studio-actions button:first-of-type{background:#dcc199;color:#092923;border-color:#dcc199}
+.studio-actions button:disabled{opacity:.55;cursor:default}
+.studio-actions input{width:1px;height:1px;position:absolute;opacity:0}
+.studio-actions label:focus-within{outline:2px solid #fff;outline-offset:3px}
+.studio-body{display:grid;grid-template-columns:minmax(270px,325px) minmax(0,1fr)}
+.studio-editor{background:#fffdf8;padding:16px;max-height:calc(100dvh - 67px);overflow:auto}
+.studio-status{margin:0 0 10px;color:#34544a;min-height:38px}
+.studio-editor>details{border-top:1px solid #c9c9be;padding:9px 0 12px}
+.studio-editor summary{cursor:pointer;font-weight:800;padding:5px 0}
+.studio-field{display:grid;gap:5px;margin:8px 0;font-size:13px}
+.studio-field:has(input[type=checkbox]){display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.studio-field :is(input:not([type=checkbox]),textarea,select){width:100%;min-width:0;border:1px solid #8a9890;padding:7px;background:white}
+.studio-field input[type=color]{min-height:35px;padding:1px}
+.studio-colors{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.studio-record{border:1px solid #d5d8cd;margin:8px 0;padding:6px 9px}
+.studio-stage{overflow:auto;padding:16px 0;display:flex;justify-content:center;align-items:start;max-height:calc(100dvh - 67px)}
+.studio-frame-shell{position:relative;overflow:hidden;background:#fff;box-shadow:0 10px 50px #253c3030}
+.studio-stage iframe{transform-origin:top left;border:0;max-width:none;display:block}
+.studio-shell :focus-visible{outline:2px solid #768853;outline-offset:3px}
+@media(max-width:690px){.studio-body{grid-template-columns:1fr}.studio-editor{max-height:52dvh}.studio-stage{max-height:none}}

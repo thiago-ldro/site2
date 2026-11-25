@@ -1,0 +1,7 @@
+export const presets = {
+  'Emerald Luxury': { primary: '#123B35', dark: '#092923', paper: '#F8F7F2', accent: '#C7AB83', ink: '#181C1B' },
+  'Blue Medical': { primary: '#214560', dark: '#102B40', paper: '#F4F8FB', accent: '#B7CBDC', ink: '#172835' },
+  'Ivory Elegance': { primary: '#554538', dark: '#34291F', paper: '#FCF7EA', accent: '#DCBB8B', ink: '#352B23' },
+  'Modern Black': { primary: '#292929', dark: '#141414', paper: '#F7F7F7', accent: '#C6C6C6', ink: '#181818' },
+  'Soft Rose': { primary: '#704857', dark: '#412735', paper: '#FCF5F4', accent: '#E5BCC1', ink: '#38272C' },
+} as const
