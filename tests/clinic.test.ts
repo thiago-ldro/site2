@@ -32,6 +32,14 @@ test('aplica todos os presets e respeita sobrescritas', () => {
     return theme['--primary']
   })
   assert.equal(new Set(values).size, 5)
+  assert.equal(clinicConfig.preset, 'Blue Medical')
+  const blue = themeVariables(clinicConfig)
+  assert.equal(blue['--primary'], '#123C78')
+  assert.equal(blue['--signal'], '#3985CC')
+  assert.equal(blue['--dark'], '#0A192F')
+  assert.equal(blue['--paper'], '#F4F8FC')
+  assert.equal(blue['--surface'], '#FFFFFF')
+  assert.equal(blue['--accent'], '#C4D0DE')
   assert.equal(themeVariables({ ...clinicConfig, colors: { primary: '#333333' } })['--primary'], '#333333')
 })
 

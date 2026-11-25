@@ -1,6 +1,6 @@
 # AXYRON Dental Ultra Premium Master
 
-Modelo estático de website odontológico com interface em português, formulário de contato via WhatsApp e editor interno AXYRON Studio. O conteúdo inicial apresenta a marca demonstrativa AXYRON ODONTOLOGIA.
+Modelo estático de website odontológico com interface em português, formulário de contato via WhatsApp e editor interno AXYRON Studio. O conteúdo inicial apresenta a marca demonstrativa AXYRON ODONTOLOGIA com o preset Blue Medical Ultra Premium.
 
 ## Requisitos e comandos
 

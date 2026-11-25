@@ -30,7 +30,7 @@ export default function App({ config, editing = false }: { config: ClinicConfig;
     return () => { disposed = true; cancel(idle); stop?.() }
   }, [config.motion, editing])
 
-  return <div ref={root} className="site" data-motion={editing ? 'off' : config.motion} style={themeVariables(config) as CSSProperties}>
+  return <div ref={root} className="site" data-preset={config.preset} data-motion={editing ? 'off' : config.motion} style={themeVariables(config) as CSSProperties}>
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <Nav config={config} />
     <main id="conteudo">

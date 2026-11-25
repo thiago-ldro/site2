@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import App from '../../App'
 import type { ClinicConfig } from '../../config/schema'
 import { clinicSchema } from '../../config/schema'
 import { clinicConfig } from '../../config/clinic.config'
 import { presets } from '../../config/presets'
+import { themeVariables } from '../../lib/theme'
 import { Field, Select, Text, Upload } from './Fields'
 import { Collection, CopyEditor, PhotosEditor, ReviewsEditor, TeamEditor, TreatmentsEditor } from './Editors'
 
@@ -62,7 +63,7 @@ export function Studio() {
     setStatus('Configuração exportada.')
   }
 
-  return <div className="studio-shell">
+  return <div className="studio-shell" style={themeVariables(clinicConfig) as CSSProperties}>
     <header className="studio-header">
       <h1>AXYRON <em>Studio</em></h1>
       <div className="device-picker" aria-label="Tamanho da prévia">{(Object.keys(sizes) as (keyof typeof sizes)[]).map((item) => <button key={item} aria-pressed={device === item} onClick={() => setDevice(item)}>{item}</button>)}</div>
@@ -79,7 +80,7 @@ export function Studio() {
           <Upload label="Logotipo" value={config.logo} set={(value) => update('logo', value)} />
           <Upload label="Favicon" value={config.favicon} set={(value) => update('favicon', value)} />
           <Select label="Preset" value={config.preset} options={Object.keys(presets)} set={(value) => setConfig((previous) => ({ ...previous, preset: value as ClinicConfig['preset'], colors: {} }))} />
-          <div className="studio-colors">{Object.entries({ ...presets[config.preset], ...config.colors }).map(([key, value]) => <Text key={key} label={{ primary:'Primária', dark:'Fundo escuro', paper:'Fundo claro', accent:'Destaque', ink:'Texto' }[key] ?? key} type="color" value={value} set={(color) => update('colors', { ...config.colors, [key]: color })} />)}</div>
+          <div className="studio-colors">{Object.entries({ ...presets[config.preset], ...config.colors }).map(([key, value]) => <Text key={key} label={{ primary:'Primária', signal:'Luz e reflexos', dark:'Fundo escuro', surface:'Superfície', paper:'Fundo claro', accent:'Destaque', ink:'Texto' }[key] ?? key} type="color" value={value} set={(color) => update('colors', { ...config.colors, [key]: color })} />)}</div>
           <Select label="Fonte dos títulos" value={config.fonts.heading} options={['Newsreader', 'Georgia', 'Manrope']} set={(heading) => update('fonts', { ...config.fonts, heading: heading as ClinicConfig['fonts']['heading'] })} />
           <Select label="Fonte do texto" value={config.fonts.body} options={['Manrope', 'System', 'Georgia']} set={(body) => update('fonts', { ...config.fonts, body: body as ClinicConfig['fonts']['body'] })} />
         </details>

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import { presets } from '../src/config/presets'
+import { clinicConfig } from '../src/config/clinic.config'
 
 test('Studio altera a prévia, valida importação, exporta JSON e restaura o padrão', async ({ page }) => {
   await page.goto('http://127.0.0.1:4181/studio.html')
@@ -25,7 +26,7 @@ test('Studio altera a prévia, valida importação, exporta JSON e restaura o pa
   expect(JSON.parse(json).preset).toBe('Soft Rose')
   expect(JSON.parse(json).logo).toBe('data:image/png;base64,' + png)
   await page.getByRole('button', { name: 'Restaurar padrão' }).click()
-  await expect(page.getByRole('combobox', { name: 'Preset', exact: true })).toHaveValue('Emerald Luxury')
+  await expect(page.getByRole('combobox', { name: 'Preset', exact: true })).toHaveValue(clinicConfig.preset)
   const input = page.locator('input[accept=".json,application/json"]')
   await input.setInputFiles({ name: 'invalido.json', mimeType: 'application/json', buffer: Buffer.from('{}') })
   await expect(page.getByRole('status')).toContainText('Falha na importação')

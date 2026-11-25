@@ -9,9 +9,11 @@ const fonts = {
 }
 
 export function themeVariables(config: ClinicConfig) {
-  const colors = { ...presets[config.preset], ...config.colors }
+  const preset = presets[config.preset]
+  const colors = { signal: preset.accent, surface: '#FFFFFF', ...preset, ...config.colors }
   return {
-    '--primary': colors.primary, '--dark': colors.dark, '--paper': colors.paper, '--accent': colors.accent, '--ink': colors.ink,
+    '--primary': colors.primary, '--signal': colors.signal, '--dark': colors.dark,
+    '--surface': colors.surface, '--paper': colors.paper, '--accent': colors.accent, '--ink': colors.ink,
     '--heading': fonts[config.fonts.heading], '--body': fonts[config.fonts.body],
   }
 }

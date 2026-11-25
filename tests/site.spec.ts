@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { mkdir } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
+import { clinicConfig } from '../src/config/clinic.config'
 
 test('página pública, metadados, recursos locais, links e console', async ({ page, request }) => {
   const errors: string[] = []
@@ -9,7 +10,9 @@ test('página pública, metadados, recursos locais, links e console', async ({ p
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Seu sorriso merece uma experiência extraordinária.')
   await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', 'noindex, nofollow')
-  for (const path of ['/', '/robots.txt', '/sitemap.xml', '/brand.svg', ...await page.locator('img').evaluateAll((images) => [...new Set(images.map((image) => new URL(image.getAttribute('src')!, location.origin).pathname))])]) {
+  await expect(page.locator('.site')).toHaveAttribute('data-preset', 'Blue Medical')
+  await expect(page.locator('meta[name=theme-color]')).toHaveAttribute('content', '#0A192F')
+  for (const path of ['/', '/robots.txt', '/sitemap.xml', clinicConfig.favicon, clinicConfig.photos.heroMobile, ...await page.locator('img').evaluateAll((images) => [...new Set(images.map((image) => new URL(image.getAttribute('src')!, location.origin).pathname))])]) {
     expect((await request.get(path)).ok(), path).toBeTruthy()
   }
   for (const id of await page.locator('a[href^="#"]').evaluateAll((links) => [...new Set(links.map((link) => link.getAttribute('href')!.slice(1)))])) {
@@ -54,6 +57,9 @@ test('tratamentos, seleção automática, privacidade, validação e prévia sem
 test('faixa pausável, galeria, navegação por teclado e FAQ', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/')
+  const cta = page.getByRole('link', { name: 'Agendar minha avaliação' })
+  await cta.hover()
+  await expect.poll(() => cta.evaluate((el) => getComputedStyle(el, '::after').animationName)).toBe('blue-edge-sweep')
   await page.getByRole('button', { name: 'Pausar faixa' }).click()
   await expect(page.getByRole('button', { name: 'Reproduzir faixa' })).toBeVisible()
   await page.getByRole('button', { name: 'Reproduzir faixa' }).click()
@@ -78,6 +84,7 @@ test('navegação móvel, CTAs e ausência de overflow em quatro larguras', asyn
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
+  await expect(page.locator('.hero-word').first()).toHaveCSS('animation-name', 'none')
   await page.getByRole('button', { name: 'Abrir menu' }).click()
   await expect(page.getByRole('dialog', { name: 'Menu principal' })).toBeVisible()
   await page.getByRole('navigation', { name: 'Navegação móvel' }).getByRole('link', { name: 'Tratamentos' }).click()
@@ -126,6 +133,8 @@ test('captura desktop e mobile da build pública', async ({ page }, info) => {
       await Promise.all(Array.from(document.images, (image) => image.decode().catch(() => {})))
       await document.fonts.ready
     })
+    const heroSource = await page.locator('.hero-photo img').evaluate((img: HTMLImageElement) => new URL(img.currentSrc).pathname)
+    expect(heroSource).toBe(device === 'mobile' ? clinicConfig.photos.heroMobile : clinicConfig.photos.hero.src)
     await page.screenshot({ path: 'artifacts/' + device + '.png', fullPage: true, animations: 'disabled' })
     await page.screenshot({ path: 'artifacts/' + device + '-entrada.png', animations: 'disabled' })
     await info.attach(device, { path: 'artifacts/' + device + '.png' })

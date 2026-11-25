@@ -8,10 +8,22 @@ export function enhance(root: HTMLElement, mode: 'full' | 'light') {
   media.add('(prefers-reduced-motion: no-preference)', () => {
     root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
       if (el.getBoundingClientRect().top < innerHeight) return
-      gsap.from(el, { y: 20, duration: .65, ease: 'power2.out', clearProps: 'transform', scrollTrigger: { trigger: el, start: 'top 96%', once: true } })
+      gsap.from(el, {
+        y: 24,
+        duration: .78,
+        ease: 'power3.out',
+        clearProps: 'transform',
+        scrollTrigger: { trigger: el, start: 'top 95%', once: true },
+      })
     })
     root.querySelectorAll<HTMLElement>('[data-mask]').forEach((el) => {
-      gsap.from(el, { clipPath: 'inset(0 0 10% 0)', duration: .85, ease: 'power2.out', clearProps: 'clipPath', scrollTrigger: { trigger: el, start: 'top 94%', once: true } })
+      gsap.from(el, {
+        clipPath: 'inset(0 0 18% 0)',
+        duration: 1,
+        ease: 'power3.out',
+        clearProps: 'clipPath',
+        scrollTrigger: { trigger: el, start: 'top 94%', once: true },
+      })
     })
     const progress = root.querySelector('.reading-progress')
     if (progress) gsap.to(progress, { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } })
@@ -24,9 +36,20 @@ export function enhance(root: HTMLElement, mode: 'full' | 'light') {
       gsap.ticker.add(frame)
       const hero = root.querySelector('.hero')
       const portrait = root.querySelector('.hero-photo img')
-      if (hero && portrait) gsap.to(portrait, { yPercent: 10, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+      if (hero && portrait) {
+        gsap.fromTo(portrait, { yPercent: 0, scale: 1 }, {
+          yPercent: 4, scale: 1.085, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: .55 },
+        })
+      }
+      const about = root.querySelector('.about')
       const detail = root.querySelector('.about-small')
-      if (detail) gsap.fromTo(detail, { y: 20 }, { y: -20, ease: 'none', scrollTrigger: { trigger: detail, start: 'top bottom', end: 'bottom top', scrub: true } })
+      if (about && detail) {
+        gsap.fromTo(detail, { y: 18 }, {
+          y: -22, ease: 'none',
+          scrollTrigger: { trigger: about, start: 'top bottom', end: 'bottom top', scrub: .55 },
+        })
+      }
       const ui = new AbortController()
       const opts = { signal: ui.signal }
       root.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
